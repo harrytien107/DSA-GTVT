@@ -14,4 +14,4 @@
 
 ### 🙂 Web coi các thuật toán được thực hiện ntn
 
-- [Algorithm Visualizer](./Web%20trực%20quan%20hóa%20thuật%20toán.url)
+- [Algorithm Visualizer](https://algorithm-visualizer.org/)
