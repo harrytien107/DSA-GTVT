@@ -1,0 +1,218 @@
+Node.h
+#ifndef NODE_H
+#define NODE_H
+class Node
+{
+ public:
+ Node();
+ Node(int);
+ virtual ~Node();
+ Node *Getleft() { return left; }
+ void Setleft(Node *val) { left = val; }
+ Node *Getright() { return right; }
+  void Setright(Node *val) { right = val; }
+ Node *Getparent() { return parent; }
+ void Setparent(Node *val) { parent = val; }
+ int Getkey() { return key; }
+ void Setkey(int val) { key = val; }
+ protected:
+ private:
+ Node *left;
+ Node *right;
+ Node *parent;
+ int key;
+};
+#endif // NODE_H
+
+Node.cpp
+#include "Node.h"
+Node::Node() {
+ //ctor
+ this
+->key=0;
+ this
+->left=nullptr;
+ this
+->right=nullptr;
+ this
+->parent=nullptr;
+}
+Node::Node(int k){
+ //ctor
+ this
+->key=k;
+ this
+->left=nullptr;
+ this
+->right=nullptr;
+ this
+->parent=nullptr;
+}
+Node::~Node() {
+ //dtor }
+
+BST.h
+#ifndef BST_H
+#define BST_H
+#include <Node.h>
+class BST
+{
+ public:
+ BST();
+ virtual ~BST();
+ Node* Getroot() { return root; }
+ void Setroot(Node* val) { root = val; }
+ bool InsertNode(Node*);
+ bool InsertNodeRe(Node*,Node*);
+ void deleteNode(Node*);
+ void TravelNLR();
+ void TravelLNR();
+ void TravelLRN();
+ void NLR(Node*);
+ void LNR(Node*);
+ void LRN(Node*);
+ Node* search_x(int);
+ protected:
+ private:
+ Node* root;
+};
+#endif // BST_H
+
+BST.cpp
+#include "BST.h"
+#include <iostream>
+using namespace std;
+BST::BST() {
+ //ctor
+ this->root=nullptr;
+}
+BST::~BST() {
+ //dtor }
+bool BST::InsertNode(Node* n){
+ Node *p=this->root;
+ Node *T;
+ if(root==nullptr)
+
+{
+ this->root=n;
+ return true;
+ 
+}
+ while(p!=nullptr){
+ T=p;
+ if(p->Getkey()>n->Getkey())
+ p=p->Getleft();
+ else
+ if(p->Getkey()<n->Getkey())
+ p=p->Getright();
+ else
+ if(p->Getkey()==n->Getkey())
+ return false;
+
+}
+ if(T->Getkey()>n->Getkey())
+T->Setleft(n);
+
+ else T->Setright(n);
+
+
+n->Setparent(T);
+ return true; 
+ 
+ }
+bool BST::InsertNodeRe(Node* root,Node*p){
+ if(root==nullptr){
+ root=p;
+ return true;
+
+}
+ if(root->Getkey()==p->Getkey())
+ return false;
+ else if(root->Getkey()>p->Getkey())
+ return InsertNodeRe(root->Getleft(),p);
+ else return InsertNodeRe(root->Getright(),p);
+}
+void BST::NLR(Node*r){
+ if(r!=nullptr){
+ cout<<r->Getkey()<<"\n";
+ NLR(r->Getleft());
+ NLR(r->Getright());
+
+}
+}
+void BST::LNR(Node*r){
+ //sinh vien code }
+void BST::LRN(Node*r){
+ //sinh vien code
+ }
+void BST::TravelNLR(){
+ NLR(this->root);
+}
+void BST::TravelLNR(){
+ //sinh vien code }
+void BST::TravelLRN(){
+ //sinh vien code }
+Node* BST::search_x(int k){
+ //sinh vien code }
+void BST::deleteNode(Node* n){
+ Node* p=n;
+ if(p->Getleft()==nullptr&&n->Getright()==nullptr){
+ // sinh vien code
+ delete n; }
+ else{
+ if(p->Getright()!=nullptr){
+ p=p->Getright();
+ while(p->Getleft()!=nullptr)//
+ p=p->Getleft();
+
+n->Setkey(p->Getkey());
+ //sinh vien code
+
+ }else{
+ p=p->Getleft();
+ while(p->Getright()!=nullptr)//
+ p=p->Getright();
+
+n->Setkey(p->Getkey());
+ //sinh vien code
+
+
+}
+
+}
+}
+
+main.cpp
+#include <iostream>
+#include <BST.h>
+using namespace std;
+int main() {
+     BST *tree=new BST();
+ Node *n;
+ n=new Node(10);
+ tree->InsertNode(n);
+ n=new Node(19);
+ tree->InsertNode(n);
+ n=new Node(9);
+ tree->InsertNode(n);
+ n=new Node(3);
+ tree->InsertNode(n);
+ n=new Node(19);
+ tree->InsertNode(n);
+ n=new Node(8);
+ tree->InsertNode(n);
+ n=new Node(4);
+ tree->InsertNode(n);
+ n=new Node(1);
+ tree->InsertNode(n);
+ n=new Node(15);
+ tree->InsertNode(n);
+
+ tree->TravelNLR();
+ return 0;
+}
+
+Yêu cầu
+1. Biên dịch đoạn chương trình nêu trên.
+2. Vẽ hình cây nhị phân tìm kiếm theo dữ liệu được câu 1.
+3. Thực hiện hoàn thiện các hàm: có chú thích //sinh vien code

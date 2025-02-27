@@ -1,0 +1,203 @@
+Đề xuất cấu trúc dữ liệu thích hợp để biểu diễn đa thức (a_nx^n + a_{n-1}x^{n-1} + ... + a_1x + a_0) bằng danh sách liên kết (đơn và kép). Cài đặt các thao tác trên danh sách liên kết đơn biểu diễn đa thức:
+a. In đa thức
+b. Tính giá trị đa thức (với giá trị x nhập vào)
+c. Cộng hai đa thức
+d. Nhân hai đa thức 
+Yêu cầu: hãy sử dụng class
+Các file phải có: main.cpp, Node.h, Node.cpp, Polynomial.h, Polynomial.cpp
+
+Node.h
+#pragma once
+class Node
+{
+    private:
+        int coefficient;
+        int exponent;
+        Node* pointer;
+    public:
+        Node();
+        Node(int, int);
+        virtual ~Node();
+        int GetCoefficient()
+        {
+            return coefficient;
+        }
+    void SetCoefficient(int val)
+    {
+
+Polynomial.h
+#pragma once
+
+#include "Node.h"
+
+class Polynomial {
+private:
+    Node* head;
+    Node* tail;
+    int nNum;
+
+public:
+    Polynomial();
+    virtual ~Polynomial();
+    Node* GetHead() { return head; }
+    void SetHead(Node* val) { head = val; }
+    Node* GetTail() { return tail; }
+    void SetTail(Node* val) { tail = val; }
+    void InsertFirst(Node* );
+    void InsertTail(Node* );
+    bool DeleteFirst();
+
+Polynomial.cpp
+
+void Polynomial::printPolynomial() {
+    Node* p = head;
+    while (p != nullptr) {
+        cout << p->GetCoefficient();
+        if (p->GetExponent() > 1) {
+            cout << "x^" << p->GetExponent();
+        }  
+        else if (p->GetExponent() == 1) {
+            cout << "x";
+        }
+        p = p->GetPointer();
+        if (p != nullptr) cout << " + ";
+        
+    }
+}
+
+int Polynomial::EvaluatePolynomial(int x) {
+    int resultOfEvaPoly = 0;
+    Node* p = this->head;
+    while (p != nullptr) {
+        resultOfEvaPoly += p->GetCoefficient() * pow(x, p->GetExponent());
+        p = p->GetPointer();
+    }
+    return resultOfEvaPoly;
+}
+//Cong 2 da thuc
+Polynomial Polynomial::operator+(const Polynomial& other) const
+{
+    Polynomial resultAdd;
+    Node* p1 = this->head;
+    Node* p2 = other.head;
+    while (p1 != nullptr && p2 != nullptr) {
+        if (p1->GetExponent() > p2->GetExponent()) {
+            Node* p3 = new Node(p1->GetCoefficient(), p1->GetExponent());
+            resultAdd.InsertTail(p3);
+            p1 = p1->GetPointer();
+        }
+        else if (p1->GetExponent() < p2->GetExponent()) {
+            Node* p3 = new Node(p2->GetCoefficient(), p2->GetExponent());
+            resultAdd.InsertTail(p3);
+            p2 = p2->GetPointer();
+        }
+        else {
+            Node* p3 = new Node(p1->GetCoefficient() + p2->GetCoefficient(), p1->GetExponent());
+            resultAdd.InsertTail(p3);
+            p1 = p1->GetPointer();
+            p2 = p2->GetPointer();
+        }
+    }
+    while (p1 != nullptr) {
+        Node* p3 = new Node(p1->GetCoefficient(), p1->GetExponent());
+        resultAdd.InsertTail(p3);
+        p1 = p1->GetPointer();
+    }
+    while (p2 != nullptr) {
+        Node* p3 = new Node(p2->GetCoefficient(), p2->GetExponent());
+        resultAdd.InsertTail(p3);
+        p2 = p2->GetPointer();
+    }
+    return resultAdd;
+}
+Polynomial Polynomial::multiply2Poly(const Polynomial& other) 
+{
+    Polynomial resultMul;
+    Node* p1 = this->head;
+    while (p1 != nullptr) {
+        Node* p2 = other.head;
+        while (p2 != nullptr) {
+            Node* p3 = new Node(p1->GetCoefficient() * p2->GetCoefficient(), p1->GetExponent() + p2->GetExponent());
+            resultMul.InsertTail(p3);
+            p2 = p2->GetPointer();
+        }
+        p1 = p1->GetPointer();
+    }
+    return resultMul;
+}
+
+// Nhan 2 da thuc
+Polynomial Polynomial::MultiplyPolynomial(Polynomial p2) {
+    Polynomial product;
+    Node* p1 = this->head;
+    while (p1 != nullptr) {
+        Node* p2 = p2.head;
+        while (p2 != nullptr) {
+            product.InsertTail(new Node(p1->GetCoefficient() * p2->GetCoefficient(), p1->GetExponent() + p2->GetExponent()));
+            p2 = p2->GetPointer();
+        }
+        p1 = p1->GetPointer();
+    }
+    return product;
+}
+// Cong 2 da thuc
+Polynomial Polynomial::AddPolynomial(Polynomial p2) {
+    Polynomial sum;
+    Node* p1 = this->head;
+    Node* p2 = p2.head;
+    while (p1 != nullptr && p2 != nullptr) {
+        if (p1->GetExponent() == p2->GetExponent()) {
+            sum.InsertTail(new Node(p1->GetCoefficient() + p2->GetCoefficient(), p1->GetExponent()));
+            p1 = p1->GetPointer();
+            p2 = p2->GetPointer();
+        }
+        else if (p1->GetExponent() > p2->GetExponent()) {
+            sum.InsertTail(new Node(p1->GetCoefficient(), p1->GetExponent()));
+            p1 = p1->GetPointer();
+        }
+        else {
+            sum.InsertTail(new Node(p2->GetCoefficient(), p2->GetExponent()));
+            p2 = p2->GetPointer();
+        }
+    }
+    while (p1 != nullptr) {
+        sum.InsertTail(new Node(p1->GetCoefficient(), p1->GetExponent()));
+        p1 = p1->GetPointer();
+    }
+    while (p2 != nullptr) {
+        sum.InsertTail(new Node(p2->GetCoefficient(), p2->GetExponent()));
+        p2 = p2->GetPointer();
+    }
+    return sum;
+}
+// Them 1 node vao cuoi danh sach
+void Polynomial::InsertTail(Node* node) {
+    if (head == nullptr) {
+        head = tail = node;
+    }
+    else {
+        tail->SetPointer(node);
+        tail = node;
+    }
+}
+
+Polynomial Polynomial::operator*(const Polynomial& other) const {
+    Polynomial result;
+    Node* p1 = this->head;
+    
+    while (p1 != nullptr) {
+        Node* p2 = other.head;
+        Polynomial tempPoly;
+        while (p2 != nullptr) {
+            Node* p3 = new Node(p1->GetCoefficient() * p2->GetCoefficient(), p1->GetExponent() + p2->GetExponent());
+            tempPoly.InsertTail(p3);
+            p2 = p2->GetPointer();
+        }
+        result = result.AddPolynomial(tempPoly);
+        p1 = p1->GetPointer();
+    }
+    return result;
+}
+
+
+

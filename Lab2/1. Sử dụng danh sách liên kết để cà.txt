@@ -1,0 +1,645 @@
+1. Sử dụng danh sách liên kết để cài đặt cấu trúc Stack, Queue.
+2. Sử dụng các hàm PushStack, PopStack, EnQueue, DeQueue để cài đặt.
+a. Về Stack: Trong hàm main, thực hiện việc thêm vào 3 giá trị do người dùng nhập vào (thực hiện 3 lệnh thêm phần tử vào stack), sau đó thực hiện 4 lần lệnh lấy giá trị phần tử ra khỏi stack, nếu có, in giá trị phần tử ra màn hình, nếu không có (stack rỗng), in ra màn hình “STACK RONG, KHONG LAY DUOC PHAN TU”.
+b. Về Queue: Trong hàm main, thực hiện việc thêm vào 3 giá trị do người dùng nhập vào (thực hiện 3 lần lệnh thêm phần tử vào queue), sau đó thực hiện 4 lần lệnh lấy giá trị phần tử ra khỏi queue, nếu có, in giá trị phần tử ra màn hình, nếu không có (queue rỗng), in ra màn hình “QUEUE RONG, KHONG LAY DUOC PHAN TU”. 
+Yêu cầu: nếu còn thiếu file nào hãy tạo ra.
+Lưu ý: không thay đổi hay xóa những code có sẵn. Chỉ có thể được thêm vào những chỗ còn thiếu.
+Stack.h
+#ifndef STACK_H
+#define STACK_H
+#include "LinkedList.h"
+#include <iostream>
+using namespace std;
+
+class Stack {
+private: 
+    int nNum;
+    LinkedList* linkedlist;
+public:
+    Stack();
+    virtual ~Stack();
+    void push(int);
+    int pop();
+    void printStack();
+    bool isEmpty();
+    int top();
+};
+#endif // STACK_H
+
+Stack.cpp
+#include "Stack.h"
+
+
+void Stack::push(int x) 
+{
+    this->linkedlist->insertFirst(new Element(x));
+}
+int Stack::pop() 
+{
+    int p = this->linkedlist->getHead()->getdata();
+    this->linkedlist->deletefirst();
+    return p;
+}
+void Stack::printStack()
+{
+    this->linkedlist->travel();
+}
+int Stack::isEmpty()
+{
+    return this->linkedlist->getHead() == nullptr;
+}
+int Stack::top() 
+{
+    if (this->nNum == 0) 
+    {
+        cout << "Stack empty";
+    }
+    return this->linkedlist->getHead()->getdata();
+}
+Stack::Stack()
+{
+    //ctor
+    this->nNum = 0;
+    this->linkedlist = new LinkedList();
+}
+
+Stack::~Stack()
+{
+    //dtor
+}
+
+
+main.cpp
+int main()
+{
+ Stack *s=new Stack();
+ s->push(7);
+ s->push(10);
+ s->push(18);
+ s->push(20);
+ s->prinStack();
+ s->pop();
+ cout<<"\n";
+ s->printStack();
+ return 0;
+}
+
+linkedlist.cpp
+/// File: linkedlist.cpp
+
+#include "linkedlist.h"
+#include <iostream>
+using namespace std;
+linkedlist::linkedlist()
+{
+    //ctor
+    this->head = nullptr;
+    this->tail = nullptr;
+    this->nNum = 0;
+}
+
+linkedlist::~linkedlist()
+{
+    //dtor
+}
+void linkedlist::InsertFirst(element* e) 
+{
+    if (this->head == nullptr)
+        this->head = this->tail = e;
+    else 
+    {
+        e->Setpointer(this->head); //step 1
+        //e->pointer = this->head;
+        this->head = e;  // step 2
+    }
+    this->nNum++;
+
+}
+void linkedlist::InsertFirstNotDuplicate(element* e) {
+    if (this->head == nullptr)
+    {
+        this->head = this->tail = e;
+        this->nNum++;
+    }
+    else
+    {
+        if (CheckContains(e->Getdata()) == false)
+        {
+            e->Setpointer(this->head);
+            this->head = e;
+            this->nNum++;
+        }
+    }
+}
+void linkedlist::InsertTail(element* e)
+{
+    if (this->head == nullptr)
+        this->head = this->tail = e;
+    else
+    {
+        this->tail->Setpointer(e);// step 1
+        this->tail = e;    // step 2
+    }
+    this->nNum++;
+}
+bool linkedlist::CheckContains(int x) 
+{
+    element* p = this->head;
+    while (p != nullptr) 
+    {
+        if (p->Getdata() == x) return true;
+        p = p->Getpointer();
+    }
+    return false;
+}
+void linkedlist::InsertTailNotDulicate(element* e) {
+    if (this->head == nullptr)
+    {
+        this->head = this->tail = e;
+        this->nNum++;
+    }
+    else 
+    {
+        if (CheckContains(e->Getdata()) == false)
+        {
+            this->tail->Setpointer(e);
+                this->tail = e;
+            this->nNum++;
+        }
+    }
+    
+}
+void linkedlist::Travel() 
+{
+    element* p = this->head;
+    while (p != nullptr) 
+    {
+        cout << p->Getdata() << "\t"; // p -> data
+        p = p->Getpointer(); // p = p -> pointer
+    }
+}
+int linkedlist::SumList() 
+{
+    int sumNum = 0;
+    element* p = this->head;
+    while (p != nullptr) 
+    {
+        sumNum += p->Getdata();
+        p = p->Getpointer();
+    }
+    return sumNum;
+}
+bool linkedlist::DeleteFirst() 
+{
+    if (this->head == nullptr) 
+        return false;
+    else 
+    {
+        element* p = this->head;
+        this->head = this->head->Getpointer();
+        delete p;
+        return true;
+    }
+    return true;
+}
+bool linkedlist::DeleteTail()
+{
+    if (this->head == nullptr)
+        return false;
+    else
+    {
+        element* p = this->head;
+        while (p->Getpointer() != this->tail)
+            p = p->Getpointer();
+        delete this->tail;
+        this->tail = p;
+        this->tail->Setpointer(nullptr);  // this->tail->pointer = nullptr;
+        return true;
+    }
+    return true;
+}
+
+bool linkedlist::DeleteP(element* p)
+{
+    element* q; 
+    q = this->head;
+    if (this->head == p) 
+    {
+        this->head = p->Getpointer();
+        delete p;
+        return true;//Xoa thanh cong
+    }
+    while ((q != nullptr) && (q->Getpointer() != p)) //Tim q lien truoc p
+        q = q->Getpointer();
+    if (q == nullptr)
+        return false; //khong tim thay phan tu co khoa bang p
+    else
+    {
+        q->Setpointer(p->Getpointer());
+        //q->pointer = p->pointer;
+        delete p; 
+        return true; //Xoa thanh cong
+    }
+    return true;
+}
+
+bool linkedlist::removeAll() 
+{    
+    while (this->head != nullptr) 
+    {
+        DeleteFirst();
+    }
+    return true;
+}
+int linkedlist::MaxList()
+{
+    element* p = this->head;
+    int maxNum = p->Getdata();
+    while (p != nullptr) 
+    {
+        if (maxNum < p->Getdata())
+            maxNum = p->Getdata();
+        p = p->Getpointer();
+    }
+    return maxNum;
+}
+bool isPrime(int num) 
+{
+    if (num < 2)
+        return false;
+
+    for (int i = 2; i <= sqrt(num); i++)
+    {
+        if (num % i == 0) 
+        {
+            return false;
+        }
+    }
+    return true;
+}
+int linkedlist::CountPrime()
+{
+    int coutPrimeNum = 0;
+    element* p = this->head;
+    while (p != nullptr)
+    {
+        if (isPrime(p->Getdata()) == true)
+            coutPrimeNum++;
+        p = p->Getpointer();
+    }
+    return coutPrimeNum;
+}
+void linkedlist::InsertAfterP(element* Data, element* p)
+{
+    if (p != NULL)
+    {
+        Data->Setpointer(p->Getpointer());//Data->pointer = p->pointer;
+        p->Setpointer(Data); // p->pointer = Data;
+        if (this->tail == p)
+            this->tail = Data;
+    }
+    else
+        InsertFirst(Data);
+}
+int linkedlist::CountDuplicate(int x)
+{
+    int countDuplicateValue = 0;
+    element* p = this->head;
+    while (p != nullptr) 
+    {
+        if (p->Getdata() == x) countDuplicateValue++;
+        p = p->Getpointer();
+    }
+    return countDuplicateValue;
+}
+void linkedlist::Split2List(int x, linkedlist* lessThanX, linkedlist* greaterOrEqualX)
+{
+    element* currElement = this->head;
+    while (currElement != nullptr)
+    {
+        element* e = new element(currElement->Getdata());
+        if (currElement->Getdata() < x)
+        {
+            lessThanX->InsertTail(e);
+        }
+        else
+        {
+            greaterOrEqualX->InsertTail(e);
+        }
+        currElement = currElement->Getpointer();
+    }
+}
+
+Polynomial.cpp
+#include "Polynomial.h"
+#include <iostream>
+using namespace std;
+Polynomial::Polynomial()
+{
+    //ctor
+    this->head = nullptr;
+    this->tail = nullptr;
+    this->nNum = 0;
+}
+
+Polynomial::~Polynomial()
+{
+}
+void Polynomial::InsertFirst(Node* e) 
+{
+    if (this->head == nullptr)
+        this->head = this->tail = e;
+    else 
+    {
+        e->Setpointer(this->head);
+        this->head = e;
+    }
+    this->nNum++;
+}
+void Polynomial::InsertTail(Node* e) 
+{
+    if (this->head == nullptr)
+        this->head = this->tail = e;
+    else 
+    {
+        this->tail->Setpointer(e);
+        this->tail = e;
+    }
+    this->nNum++;
+}
+void Polynomial::InsertPoly(int coefficient, int exponent) {
+    Node* newNode = new Node(coefficient, exponent);
+    if (!head || head->GetExponent() < exponent) 
+    {
+        newNode->Setpointer(this->head);
+        this->head = newNode;
+    }
+    else 
+    {
+        Node* currNode = this->head;
+        while (currNode->Getpointer()!=nullptr && currNode->Getpointer()->GetExponent() > exponent) 
+        {
+            currNode = currNode->Getpointer();
+        }
+        if (currNode->GetExponent() == exponent) 
+        {
+            currNode->SetCoefficient(currNode->GetCoefficient() + coefficient);
+        }
+        else 
+        {
+            newNode->Setpointer(currNode->Getpointer());
+            currNode->Setpointer(newNode);
+        }
+    }
+}
+void Polynomial::printPolynomial()
+{
+    Node* p = this->head;
+    while (p != nullptr) 
+    {
+        cout << p->GetCoefficient();
+        if (p->GetExponent() > 1)
+        {
+            cout<< "x^" << p->GetExponent();
+        }
+        else if (p->GetExponent() == 1)
+        {
+            cout << "x";
+        }        
+        p = p->Getpointer();
+        if (p != nullptr) cout << " + ";
+    }
+}
+
+int Polynomial::EvaluatePolynomial(int x)
+{
+    int resultOfEvaPoly = 0;
+    Node* p = this->head;
+    while (p != nullptr)
+    {
+        resultOfEvaPoly += p->GetCoefficient() * pow(x, p->GetExponent());
+        p = p->Getpointer();
+    }
+    return resultOfEvaPoly;
+}
+Polynomial Polynomial::add2Polynomial(const Polynomial& other)
+{
+    Polynomial resultAdd;
+    Node* p1 = this->head;
+    Node* p2 = other.head;
+    while (p1 != nullptr && p2 != nullptr) 
+    {
+        if (p1->GetExponent() > p2->GetExponent()) 
+        {
+            Node* p3 = new Node(p1->GetCoefficient(), p1->GetExponent());
+            resultAdd.InsertTail(p3);
+            p1 = p1->Getpointer();
+        }
+        else if (p1->GetExponent() < p2->GetExponent())
+        {
+            Node* p3 = new Node(p2->GetCoefficient(), p2->GetExponent());
+            resultAdd.InsertTail(p3);
+            p2 = p2->Getpointer();
+        }
+        else
+        {
+            Node* p3 = new Node(p1->GetCoefficient() + p2->GetCoefficient(), p1->GetExponent());
+            resultAdd.InsertTail(p3);
+            p1 = p1->Getpointer();
+            p2 = p2->Getpointer();
+        }
+    }
+    while (p1 != nullptr)
+    {
+        Node* p3 = new Node(p1->GetCoefficient(), p1->GetExponent());
+        resultAdd.InsertTail(p3);
+        p1 = p1->Getpointer();
+    }
+    while (p2 != nullptr)
+    {
+        Node* p3 = new Node(p2->GetCoefficient(), p2->GetExponent());
+        resultAdd.InsertTail(p3);
+        p2 = p2->Getpointer();
+    }
+    return resultAdd;
+}
+Polynomial Polynomial::operator+(const Polynomial& other) const
+{
+    Polynomial resultAdd;
+    Node* p1 = this->head;
+    Node* p2 = other.head;
+    while (p1 != nullptr && p2 != nullptr)
+    {
+        if (p1->GetExponent() > p2->GetExponent())
+        {
+            Node* p3 = new Node(p1->GetCoefficient(), p1->GetExponent());
+            resultAdd.InsertTail(p3);
+            p1 = p1->Getpointer();
+        }
+        else if (p1->GetExponent() < p2->GetExponent())
+        {
+            Node* p3 = new Node(p2->GetCoefficient(), p2->GetExponent());
+            resultAdd.InsertTail(p3);
+            p2 = p2->Getpointer();
+        }
+        else
+        {
+            Node* p3 = new Node(p1->GetCoefficient() + p2->GetCoefficient(), p1->GetExponent());
+            resultAdd.InsertTail(p3);
+            p1 = p1->Getpointer();
+            p2 = p2->Getpointer();
+        }
+    }
+    while (p1 != nullptr)
+    {
+        Node* p3 = new Node(p1->GetCoefficient(), p1->GetExponent());
+        resultAdd.InsertTail(p3);
+        p1 = p1->Getpointer();
+    }
+    while (p2 != nullptr)
+    {
+        Node* p3 = new Node(p2->GetCoefficient(), p2->GetExponent());
+        resultAdd.InsertTail(p3);
+        p2 = p2->Getpointer();
+    }
+    return resultAdd;
+}
+Polynomial Polynomial::multiply2Poly(const Polynomial& other)
+{
+    Polynomial result;
+    Node* p1 = this->head;
+    if (p1 == nullptr)
+    {
+        result = other;
+    }
+    while (p1!=nullptr) 
+    {
+        Node* p2 = other.head;
+        Polynomial tempPoly;
+
+        while (p2!=nullptr) 
+        {
+            Node* p3 = new Node(p1->GetCoefficient() * p2->GetCoefficient(), p1->GetExponent() + p2->GetExponent());
+            tempPoly.InsertTail(p3);
+            p2 = p2->Getpointer();
+        }
+
+        result = result.add2Polynomial(tempPoly);
+        p1 = p1->Getpointer();
+    }
+
+    return result;
+}
+Polynomial Polynomial::operator*(const Polynomial& other) const
+{
+    Polynomial result;
+    Node* p1 = this->head;
+    if (p1 == nullptr)
+    {
+        result = other;
+    }
+    while (p1 != nullptr)
+    {
+        Node* p2 = other.head;
+        Polynomial tempPoly;
+
+        while (p2 != nullptr)
+        {
+            Node* p3 = new Node(p1->GetCoefficient() * p2->GetCoefficient(), p1->GetExponent() + p2->GetExponent());
+            tempPoly.InsertTail(p3);
+            p2 = p2->Getpointer();
+        }
+
+        result = result.add2Polynomial(tempPoly);
+        p1 = p1->Getpointer();
+    }
+
+    return result;
+}
+
+
+Polynomial Polynomial::multiply(const Polynomial& other)
+{
+    Polynomial result;
+    for (Node* p1 = this->head; p1; p1 = p1->Getpointer())
+    {
+        Polynomial temp;
+        for (Node* p2 = other.head; p2; p2 = p2->Getpointer()) {
+            temp.InsertPoly(p1->GetCoefficient() * p2->GetCoefficient(), p1->GetExponent() + p2->GetExponent());
+        }
+        result = result.add2Polynomial(temp);
+    }
+    return result;
+}
+
+Queue.cpp
+#include "Queue.h"
+using namespace std;
+void Queue::enqueue(int x) 
+{
+    Element* p = new Element(x);
+    this->linkedlist->InsertTail(p);
+    nNum++;
+}
+
+int Queue::dequeue()
+{
+    if (nNum == 0) 
+    {
+        cout << "QUEUE RONG, KHONG LAY DUOC PHAN TU" << endl;
+        return -1;
+    }
+    int p = this->linkedlist->getHead()->getdata();
+    this->linkedlist->deletefirst();
+    nNum--;
+    return p;
+}
+bool Queue::isEmpty()
+{
+    return this->linkedlist->getHead() == nullptr;
+}
+void Queue::printQueue()
+{
+    if (nNum == 0)
+    {
+        cout << "QUEUE RONG" << endl;
+        return;
+    }
+    this->linkedlist->travel();
+}
+int Queue::front()
+{
+    if (this->nNum == 0)
+    {
+        cout << "Queue empty";
+    }
+    return this->linkedlist->getHead()->getdata();
+}
+int Queue::rear() 
+{
+    if (this->nNum == 0) {
+        cout << "Queue empty";
+    }
+
+    Element* current = this->linkedlist->getHead();
+
+    // Duyệt từ đầu đến cuối danh sách liên kết để tìm phần tử cuối cùng
+    while (current->getPointer() != nullptr)
+    {
+        current = current->getPointer();
+    }
+
+    // Phần tử cuối cùng sẽ là phần tử rear của hàng đợi
+    return current->getdata();
+}
+Queue::Queue()
+{
+    this->nNum = 0;
+    this->linkedlist = new LinkedList();
+}
+
+Queue::~Queue() 
+{
+    delete linkedlist;
+}
+

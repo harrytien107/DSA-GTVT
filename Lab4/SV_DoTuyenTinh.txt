@@ -1,0 +1,99 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+const int TABLE_SIZE = 100; // Kích thước của bảng băm
+
+// Hàm băm dùng phép chia lấy dư
+int HashModM(int k, int M)
+{
+    if (M == 0)
+        return 0;
+    return (k % M);
+}
+
+// Hàm tìm vị trí trống dùng phương pháp dò tuyến tính
+int LinearProbe(int hashValue, int attempt, int M)
+{
+    return (hashValue + pow(attempt, 2)) % M;
+}
+
+// Cấu trúc để lưu trữ thông tin sinh viên
+struct Student 
+{
+    string name;
+    int studentID;
+    // Các thông tin khác của sinh viên (nếu cần)
+};
+
+// Mảng để lưu danh sách sinh viên
+Student hashTable[TABLE_SIZE];
+
+// Hàm để thêm sinh viên vào bảng băm
+void InsertStudent(int studentID, string name)
+{
+    int hashValue = HashModM(studentID, TABLE_SIZE);
+    int index = hashValue;
+    int attempt = 0;
+    
+    // Dò tuyến tính để tìm vị trí trống
+    while (hashTable[index].studentID != 0)
+	{
+        attempt++; // hashing lan thu i
+        index = LinearProbe(hashValue, attempt, TABLE_SIZE);
+        // Nếu quay lại vị trí ban đầu thì dừng (không có vị trí trống)
+        if (index == hashValue)
+            return;
+    }
+    
+    // Lưu sinh viên vào vị trí đã tìm được
+    hashTable[index].studentID = studentID;
+    hashTable[index].name = name;
+    
+    cout << "Inserted student " << name << " with ID " << studentID << " at index " << index << endl;
+}
+
+// Hàm để tìm sinh viên trong bảng băm
+void FindStudent(int studentID)
+{
+    int hashValue = HashModM(studentID, TABLE_SIZE);
+    int index = hashValue;
+    int attempt = 0;
+    
+    // Dò tuyến tính để tìm sinh viên
+    while (hashTable[index].studentID != studentID && hashTable[index].studentID != 0)
+	{
+        attempt++;
+        index = LinearProbe(hashValue, attempt, TABLE_SIZE);
+        // Nếu quay lại vị trí ban đầu thì dừng (không tìm thấy)
+        if (index == hashValue)
+            break;
+    }
+    
+    // Kiểm tra kết quả tìm kiếm
+    if (hashTable[index].studentID == studentID) 
+	{
+        cout << "Found student " << hashTable[index].name << " with ID " << hashTable[index].studentID << " at index " << index << endl;
+    } else {
+        cout << "Student with ID " << studentID << " not found." << endl;
+    }
+}
+
+int main()
+{
+    // Khởi tạo bảng băm
+    for (int i = 0; i < TABLE_SIZE; ++i) 
+	{
+        hashTable[i].studentID = 0; // Khởi tạo vị trí trống
+    }
+    
+    // Thêm sinh viên vào bảng băm
+    InsertStudent(111111, "An");
+    InsertStudent(222222, "Ba");
+    
+    // Tìm sinh viên trong bảng băm
+    FindStudent(111111); // Tìm sinh viên có ID 123456
+    FindStudent(222222); // Tìm sinh viên có ID 789012 (không tồn tại)
+    
+    return 0;
+}

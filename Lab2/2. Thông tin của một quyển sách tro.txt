@@ -1,0 +1,161 @@
+2. Thông tin của một quyển sách trong thư viện gồm các thông tin:
+• Tên sách (chuỗi)
+• Tác giả (chuỗi, tối đa 5 tác giả)
+• Nhà xuất bản (chuỗi)
+• Năm xuất bản (số nguyên) 
+a. Hãy tạo danh sách liên kết (đơn hoặc kép) chứa thông tin các quyển sách có trong thư viện (được nhập từ bàn phím).
+b. Cho biết số lượng các quyển sách của một tác giả bất kỳ (nhập từ bàn phím).
+c. Trong năm YYYY (nhập từ bàn phím), nhà xuất bản ABC (nhập từ bàn phím) đã phát hành những quyển sách nào. 
+Yêu cầu: Source.cpp, Library.h, Library.cpp, Book.h, Book.cpp
+Lưu ý: Chỉ có thêm không thay đổi code có sẵn, có thể thay đổi Sourcecode.cpp
+Library.cpp
+#include "Library.h"
+#include <iostream>
+using namespace std;
+Library::Library()
+{
+    //ctor
+    this->head = nullptr;
+    this->tail = nullptr;
+    this->nNum = 0;
+}
+
+Library::~Library()
+{
+}
+void Library::InsertFirst(Book* e)
+{
+    if (this->head == nullptr)
+        this->head = this->tail = e;
+    else
+    {
+        e->SetNextPointer(this->head);
+        this->head = e;
+    }
+    this->nNum++;
+}
+void Library::InsertTail(Book* e)
+{
+    if (this->head == nullptr)
+        this->head = this->tail = e;
+    else
+    {
+        this->tail->SetNextPointer(e);
+        this->tail = e;
+    }
+    this->nNum++;
+}
+void Library::printBooks()
+{
+    Book* currBook = this->head;
+    while (currBook != nullptr)
+    {
+        cout << "Title: " << currBook->GetTitle() << endl;
+        cout << "Authors: ";
+        for (const auto& author : currBook->GetAuthors())
+        {
+            cout << author << " ";
+        }
+        cout << endl;
+        cout << "Publisher: " << currBook->GetPublisher() << endl;
+        cout << "Year: " << currBook->GetYear() << endl;
+        cout << endl;
+        currBook = currBook->GetNextPointer();
+
+    }
+}
+
+int Library::countBooksByAuthor(string author) 
+{
+    int countBooks = 0;
+    Book* currBook = this->head;
+    while (currBook!=nullptr)
+    {
+        for (const auto& a : currBook->GetAuthors())
+        {
+            if (a == author) 
+            {
+                countBooks++;
+                break;
+            }
+        }
+        currBook = currBook->GetNextPointer();
+    }
+    return countBooks;
+}
+
+void Library::printBooksByPublisherAndYear(string publisher, int year)
+{
+    Book* currBook = this->head;
+    while (currBook!=nullptr) 
+    {
+        if (currBook->GetPublisher() == publisher && currBook->GetYear() == year)
+        {
+            cout << "Title: " << currBook->GetTitle() << endl;
+            cout << "Authors: ";
+            for (const auto& author : currBook->GetAuthors())
+            {
+                cout << author << " ";
+            }
+            cout << endl;
+            cout << "Publisher: " << currBook->GetPublisher() << endl;
+            cout << "Year: " << currBook->GetYear() << endl;
+            cout << endl;
+        }
+        currBook = currBook->GetNextPointer();
+    }
+}
+
+Book.h
+#pragma once
+#include <iostream>
+#include <cstring>
+#include <vector>
+using namespace std;
+class Book
+{
+private:
+    string title;
+    vector<string> author;
+    string publisher;
+    int year;
+    Book *next;
+public:
+    Book(string, vector<string>, string, int);
+    string GetTiltle();
+    {
+        return title;
+    }
+    void SetTitle(int value)
+    {
+        title = value;
+    }
+
+Source.cpp
+#include <iostream>
+#include "Library.h"
+using namespace std;
+
+int main()
+{
+    Library lib;
+    Book* book1;
+    Book* book2;
+    Book* book3;
+    Book* book4;
+    book1 = new Book("Book1", {"Author1", "Author2"}, "Publisher1", 2020);
+    book2 = new Book("Book2", {"Author3", "Author4"}, "Publisher2", 2021);
+    book3 = new Book("Book3", {"Author5", "Author6"}, "Publisher3", 2022);
+    book4 = new Book("Book4", {"Author7", "Author8"}, "Publisher1", 2020);
+    lib.InsertTail(book1);
+    lib.InsertTail(book2);
+    lib.InsertTail(book3);
+    lib.InsertTail(book4);
+
+    cout << lib.countBooksByAuthor("Author1");
+    cout << "/n";
+    lib.printBooksByPublisherAndYear("Publisher1", 2020);
+    return 0;
+} 
+
+
